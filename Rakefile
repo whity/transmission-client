@@ -4,11 +4,11 @@ require 'rake'
 begin
   require 'jeweler'
   Jeweler::Tasks.new do |gem|
-    gem.name = "transmission-client"
+    gem.name = "hornairs-transmission-client"
     gem.summary = %Q{A Transmission RPC Client}
     #gem.description = %Q{}
     gem.email = "git@dsander.de"
-    gem.homepage = "http://github.com/dsander/transmission-client"
+    gem.homepage = "http://github.com/hornairs/transmission-client"
     gem.authors = ["Dominik Sander"]
     gem.add_development_dependency "thoughtbot-shoulda", ">= 0"
     gem.files += Dir['lib/**/*.rb','README.markdown']

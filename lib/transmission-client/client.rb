@@ -1,7 +1,7 @@
 module Transmission
   class Client
-    def initialize(host='localhost',port=9091)
-      Connection.instance.init(host, port)
+    def initialize(host='localhost',port=9091, username = "", password = "")
+      Connection.instance.init(host, port, username, password)
     end
     
     def start_all &cb
@@ -61,7 +61,8 @@ module Transmission
   		    cb.call torrs
 		    }
   	  else
-    	  Connection.instance.request('torrent-get', {'fields' => fields ? fields : Transmission::Torrent::ATTRIBUTES})['torrents'].each do |t|
+    	  data = Connection.instance.request('torrent-get', {'fields' => fields ? fields : Transmission::Torrent::ATTRIBUTES})
+    	  data['torrents'].each do |t|
     	    torrs << Torrent.new(t)
   		  end
   		  torrs

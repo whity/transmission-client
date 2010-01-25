@@ -2,16 +2,41 @@ module Transmission
   class Connection
     include Singleton
     
-    def init(host, port)
+    def init(host, port, username = "", password = "")
       @host = host
       @port = port
-      uri = URI.parse("http://#{@host}:#{@port}")
-      @conn = Net::HTTP.start(uri.host, uri.port)
+      @username = username unless username == ""
+      @password = password unless password == ""
       @header = {}
+      uri = URI.parse("http://#{@host}:#{@port}")
+      Net::HTTP.start(uri.host, uri.port) do |http|
+        @conn = http;
+        resp = http.request(build_request(), build_json('session_get'))
+        if resp.class == Net::HTTPUnauthorized
+          raise SecurityError, 'The client was not able to authenticate, is your username or password wrong?'
+        elsif resp.class == Net::HTTPConflict && @header['x-transmission-session-id'].nil?
+          @header['x-transmission-session-id'] = resp['x-transmission-session-id']
+        elsif resp.class == Net::HTTPOK
+          true
+        else
+          false
+        end
+      end
+    end
+    
+    def build_request()
+      req = Net::HTTP::Post.new('/transmission/rpc')
+      if @username != ""
+        req.basic_auth @username, @password
+      end
+      if ! @header['x-transmission-session-id'].nil?
+        req.add_field 'x-transmission-session-id', @header['x-transmission-session-id'] 
+      end
+      req
     end
     
     def request(method, attributes={})
-      res = @conn.post('/transmission/rpc',build_json(method,attributes),@header) 
+      res = @conn.request(build_request, build_json(method, attributes)) 
       if res.class == Net::HTTPConflict && @header['x-transmission-session-id'].nil?
         @header['x-transmission-session-id'] = res['x-transmission-session-id']
         request(method,attributes)
@@ -23,11 +48,16 @@ module Transmission
         else
           resp
         end
+      else
+        pp res
+        raise RuntimeError, 'Reponse received from the daemon was something transmission-client cant deal with! Panic!'
       end
     end
     
     def send(method, attributes={})
-      request(method, attributes)['result'].nil?
+      data = request(method, attributes)['result']
+      pp data
+      data.nil?
     end
     
     def build_json(method,attributes = {})

@@ -28,6 +28,10 @@ module Transmission
       Connection.instance.send('torrent-remove', {'ids' => @attributes['id'], 'delete-local-data' => delete_data })
     end
     
+    def move(location, move = true)
+      Connection.instance.send('torrent-set-location', {'ids' => @attributes['id'], 'location' => location, 'move' => move})
+    end
+    
     def method_missing(m, *args, &block)
       if ATTRIBUTES.include? m.to_s
         return @attributes[m.to_s]
