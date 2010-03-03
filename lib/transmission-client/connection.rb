@@ -43,20 +43,17 @@ module Transmission
       elsif res.class == Net::HTTPOK
         resp = JSON.parse(res.body)
         if resp["result"] == 'success'
-          #pp resp
           resp['arguments']
         else
           resp
         end
       else
-        pp res
         raise RuntimeError, 'Reponse received from the daemon was something transmission-client cant deal with! Panic!'
       end
     end
     
     def send(method, attributes={})
       data = request(method, attributes)['result']
-      pp data
       data.nil?
     end
     
