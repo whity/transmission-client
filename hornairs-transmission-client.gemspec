@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Dominik Sander"]
-  s.date = %q{2010-01-25}
+  s.date = %q{2010-03-03}
   s.email = %q{git@dsander.de}
   s.extra_rdoc_files = [
     "LICENSE",
@@ -24,6 +24,9 @@ Gem::Specification.new do |s|
      "README.rdoc",
      "Rakefile",
      "VERSION",
+     "examples/connection-example.rb",
+     "hornairs-transmission-client-0.0.1.gem",
+     "hornairs-transmission-client.gemspec",
      "lib/transmission-client.rb",
      "lib/transmission-client/client.rb",
      "lib/transmission-client/connection.rb",
@@ -36,12 +39,12 @@ Gem::Specification.new do |s|
   s.homepage = %q{http://github.com/hornairs/transmission-client}
   s.rdoc_options = ["--charset=UTF-8"]
   s.require_paths = ["lib"]
-  s.rubygems_version = %q{1.3.5}
+  s.rubygems_version = %q{1.3.6}
   s.summary = %q{A Transmission RPC Client}
   s.test_files = [
     "test/helper.rb",
      "test/test_transmission-rpc.rb",
-     "examples/connection.rb"
+     "examples/connection-example.rb"
   ]
 
   if s.respond_to? :specification_version then
