@@ -25,7 +25,6 @@ Gem::Specification.new do |s|
      "Rakefile",
      "VERSION",
      "examples/connection-example.rb",
-     "hornairs-transmission-client-0.0.1.gem",
      "hornairs-transmission-client.gemspec",
      "lib/transmission-client.rb",
      "lib/transmission-client/client.rb",
