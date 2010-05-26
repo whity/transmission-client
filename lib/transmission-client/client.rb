@@ -45,7 +45,7 @@ module Transmission
     
     def session &cb
       if cb
-        Connection.instance.request('session-get') { |resp| cb.call Session.new resp }
+        Connection.instance.request('session-get') { |resp| cb.call(Session.new(resp)) }
       else
         Session.new Connection.instance.request('session-get')
       end
@@ -54,11 +54,11 @@ module Transmission
   	def torrents(fields = nil, &cb)
   	  torrs = []
   	  if cb
-    	  Connection.instance.request('torrent-get', {'fields' => fields ? fields : Transmission::Torrent::ATTRIBUTES}) { |resp| 
+    	  Connection.instance.request('torrent-get', {'fields' => fields ? fields : Transmission::Torrent::ATTRIBUTES}) { |resp|
     	    resp['torrents'].each do |t|
     	      torrs << Torrent.new(t)
   		    end
-  		    cb.call torrs
+  		    cb.call(torrs)
 		    }
   	  else
     	  data = Connection.instance.request('torrent-get', {'fields' => fields ? fields : Transmission::Torrent::ATTRIBUTES})
