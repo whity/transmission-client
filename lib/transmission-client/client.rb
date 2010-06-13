@@ -32,7 +32,12 @@ module Transmission
       if a['filename'].nil? && a['metainfo'].nil?
         raise "You need to provide either a 'filename' or 'metainfo'."
       end
-      Connection.instance.send('torrent-add', a, &cb)
+      result = Connection.instance.request('torrent-add', a, &cb)
+      if (result.kind_of?(Hash))
+          return result['torrent-added']['id']
+      end
+      
+      return nil
     end
     
     def add_torrent_by_file(filename, &cb)
@@ -53,20 +58,17 @@ module Transmission
     
   	def torrents(fields = nil, &cb)
   	  torrs = []
-  	  if cb
-    	  Connection.instance.request('torrent-get', {'fields' => fields ? fields : Transmission::Torrent::ATTRIBUTES}) { |resp|
-    	    resp['torrents'].each do |t|
-    	      torrs << Torrent.new(t)
-  		    end
-  		    cb.call(torrs)
-		    }
-  	  else
-    	  data = Connection.instance.request('torrent-get', {'fields' => fields ? fields : Transmission::Torrent::ATTRIBUTES})
-    	  data['torrents'].each do |t|
-    	    torrs << Torrent.new(t)
-  		  end
-  		  torrs
-	    end
+  	  
+      data = Connection.instance.request('torrent-get', {'fields' => fields ? fields : Transmission::Torrent::ATTRIBUTES})
+      data['torrents'].each do |t|
+        torrs.push(Torrent.new(t))
+      end
+      
+      if (cb)
+        cb.call(torrs)
+      end
+  	  
+  	  return torrs
     end
   end
 end
